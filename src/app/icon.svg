@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="appicon-title">
+  <title id="appicon-title">IMS</title>
+  <rect width="32" height="32" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1" />
+  <g transform="translate(16 17) scale(0.292)" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="rotate(235)">
+      <path d="M-29 10 Q 0 31 29 10" stroke="#735F7F" stroke-width="13" />
+    </g>
+    <g transform="rotate(353)">
+      <path d="M-29 10 Q 0 31 29 10" stroke="#75844D" stroke-width="13" />
+    </g>
+    <g transform="rotate(117)">
+      <path d="M-29 10 Q 0 31 29 10" stroke="#759896" stroke-width="13" />
+    </g>
+  </g>
+</svg>

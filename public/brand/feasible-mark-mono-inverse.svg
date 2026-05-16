@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" role="img" aria-labelledby="fim-title">
+  <title id="fim-title">Feasible Solutions mark (inverse)</title>
+  <g transform="translate(48 48)" stroke="#fafafa" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="rotate(235)">
+      <path d="M-29 10 Q 0 31 29 10" stroke-width="13" />
+    </g>
+    <g transform="rotate(353)">
+      <path d="M-29 10 Q 0 31 29 10" stroke-width="13" opacity="0.92" />
+    </g>
+    <g transform="rotate(117)">
+      <path d="M-29 10 Q 0 31 29 10" stroke-width="13" opacity="0.85" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 112" fill="none" role="img" aria-labelledby="fwl-title fwl-desc">
+  <title id="fwl-title">Feasible Solutions Contracting Est.</title>
+  <desc id="fwl-desc">
+    Logo mark with bilingual company name  intended for light backgrounds (dark text).
+  </desc>
+  <g transform="translate(8 14) scale(0.855)">
+    <g transform="translate(48 48)" stroke-linecap="round" stroke-linejoin="round">
+      <g transform="rotate(235)">
+        <path d="M-29 10 Q 0 31 29 10" stroke="#735F7F" stroke-width="13" />
+      </g>
+      <g transform="rotate(353)">
+        <path d="M-29 10 Q 0 31 29 10" stroke="#75844D" stroke-width="13" />
+      </g>
+      <g transform="rotate(117)">
+        <path d="M-29 10 Q 0 31 29 10" stroke="#759896" stroke-width="13" />
+      </g>
+    </g>
+  </g>
+  <text
+    xml:lang="ar"
+    direction="rtl"
+    x="620"
+    y="54"
+    text-anchor="end"
+    dominant-baseline="middle"
+    fill="#171717"
+    font-family="system-ui, 'Segoe UI', Tahoma, 'Noto Naskh Arabic', 'Arial Unicode MS', sans-serif"
+    font-size="22"
+    letter-spacing="-0.01em"
+    >E$33) 'D-DHD 'DE,/J) DDEB'HD'*</text>
+  <text
+    x="118"
+    y="92"
+    text-anchor="start"
+    dominant-baseline="middle"
+    fill="#171717"
+    font-family="system-ui, 'Segoe UI', Helvetica, Arial, sans-serif"
+    font-size="18"
+    letter-spacing="0.01em"
+    >Feasible Solutions Contracting Est.</text>
+</svg>

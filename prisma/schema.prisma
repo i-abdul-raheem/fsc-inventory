@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         String   @default("OPERATOR")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  permissions  UserPermission[]
+}
+
+model Permission {
+  id           String             @id @default(cuid())
+  code         String             @unique
+  userLinks    UserPermission[]
+}
+
+model UserPermission {
+  userId         String
+  permissionId   String
+  assignedAt     DateTime   @default(now())
+  user           User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission     Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permissionId])
+  @@index([userId])
+}
+
+// Buyer / site in Saudi Arabia — link orders for traceability.
+model Customer {
+  id           String        @id @default(cuid())
+  name         String
+  tradingName  String?
+  email        String?
+  phone        String?
+  city         String?
+  region       String?
+  addressLine  String?
+  vatNumber    String?
+  notes        String?
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  orders       SalesOrder[]
+}
+
+// Component / material supplier (often overseas).
+model Seller {
+  id           String   @id @default(cuid())
+  name         String
+  tradingName  String?
+  email        String?
+  phone        String?
+  city         String?
+  country      String?  @default("Saudi Arabia")
+  vatNumber    String?
+  notes        String?
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Item {
+  id          String               @id @default(cuid())
+  sku         String               @unique
+  name        String
+  description String?
+  kind        String // COMPONENT | KIT
+  active      Boolean              @default(true)
+  // When set, alert if qty on hand is STRICTLY LESS than this value (components only).
+  lowStockAlertBelow Int?
+  // Standard inventory cost in SAR halalas (minor units), used for COGS and valuation reporting.
+  standardCostCents Int?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  bomAsKit    BillOfMaterialLine[] @relation("KitItem")
+  bomAsPart   BillOfMaterialLine[] @relation("ComponentItem")
+  stock       StockLevel?
+  orderLines  SalesOrderLine[]
+  reservations Reservation[]
+  needs       ProcurementNeed[]
+}
+
+model BillOfMaterialLine {
+  id              String @id @default(cuid())
+  kitItemId       String
+  componentItemId String
+  qtyPerKit       Int
+
+  kit       Item @relation("KitItem", fields: [kitItemId], references: [id], onDelete: Cascade)
+  component Item @relation("ComponentItem", fields: [componentItemId], references: [id], onDelete: Restrict)
+
+  @@unique([kitItemId, componentItemId])
+}
+
+model StockLevel {
+  id        String @id @default(cuid())
+  itemId    String @unique
+  qtyOnHand Int    @default(0)
+  item      Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
+model SalesOrder {
+  id                   String          @id @default(cuid())
+  customerId           String?
+  customer             Customer?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerPoRef        String?
+  customerName         String
+  status               String           @default("DRAFT") // status values documented in TS
+  internalPickSlipRef   String?         @unique
+  fulfilledAt          DateTime?
+  shippedAt            DateTime?
+  shippedCarrierNote   String?
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+  lines                SalesOrderLine[]
+  procurementNeeds     ProcurementNeed[]
+  reservations         Reservation[]
+  salePosting          SalePosting?
+
+  @@index([customerId])
+}
+
+model SalesOrderLine {
+  id           String       @id @default(cuid())
+  salesOrderId String
+  itemId       String
+  quantity     Int
+  unitPrice    Int?
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  item       Item       @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@index([salesOrderId])
+}
+
+model Reservation {
+  id           String       @id @default(cuid())
+  salesOrderId String
+  itemId       String
+  qty          Int
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  item       Item       @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@unique([salesOrderId, itemId])
+  @@index([itemId])
+}
+
+model ProcurementNeed {
+  id                     String       @id @default(cuid())
+  salesOrderId           String
+  itemId                 String
+  qtyRequired            Int
+  qtyOutstanding         Int
+  status                 String       @default("OPEN")
+  supplierReference      String?
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  item       Item       @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@index([salesOrderId])
+  @@index([itemId])
+}
+
+model SalePosting {
+  id                           String       @id @default(cuid())
+  salesOrderId                 String       @unique
+  currency                     String       @default("SAR")
+  // Recognition date for finance reports (typically order ship time). Null until shipment.
+  recognizedAt                 DateTime?
+  revenueRecognizedCents       Int          @default(0)
+  costOfGoodsRecognizedCents   Int          @default(0)
+  memo                         String?
+
+  salesOrder SalesOrder @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+}
