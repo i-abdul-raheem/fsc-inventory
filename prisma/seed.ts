@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 import { ITEM_KIND } from "../src/lib/domain/status";
 import { USER_ROLE } from "../src/lib/domain/roles";
@@ -7,8 +7,7 @@ import { syncPermissionRows } from "../src/lib/auth/syncPermissions";
 
 function assertEnv() {
   if (!process.env.DATABASE_URL) {
-    process.env.DATABASE_URL = "file:./dev.db";
-    console.warn("DATABASE_URL unset; falling back to file:./dev.db for seed");
+    console.warn("DATABASE_URL unset; set it to your MongoDB connection string before seeding.");
   }
 }
 
@@ -17,6 +16,8 @@ const prisma = new PrismaClient();
 async function main() {
   assertEnv();
 
+  await prisma.userPermission.deleteMany();
+  await prisma.permission.deleteMany();
   await prisma.user.deleteMany();
   await prisma.billOfMaterialLine.deleteMany();
   await prisma.salePosting.deleteMany();
@@ -24,10 +25,8 @@ async function main() {
   await prisma.procurementNeed.deleteMany();
   await prisma.salesOrderLine.deleteMany();
   await prisma.salesOrder.deleteMany();
-  // Raw deletes: seed runs via tsx and some environments have a PrismaClient type/cache without
-  // newer delegates until `prisma generate` runs; $executeRaw is always on the client.
-  await prisma.$executeRaw(Prisma.sql`DELETE FROM "Customer"`);
-  await prisma.$executeRaw(Prisma.sql`DELETE FROM "Seller"`);
+  await prisma.customer.deleteMany();
+  await prisma.seller.deleteMany();
   await prisma.stockLevel.deleteMany();
   await prisma.item.deleteMany();
 

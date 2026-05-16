@@ -1,0 +1,11 @@
+# Optional local MongoDB with a single-node replica set (Prisma needs replication for transactions).
+# 1. docker compose up -d
+# 2. docker compose exec mongodb mongosh --eval 'rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "mongodb:27017" }] })'
+# 3. Set DATABASE_URL=mongodb://127.0.0.1:27017/ims?replicaSet=rs0&directConnection=true
+services:
+  mongodb:
+    image: mongo:7.0
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
