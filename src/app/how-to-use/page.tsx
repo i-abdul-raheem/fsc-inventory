@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { HowToUseDocumentation } from "./documentation";
+import { HowToUseDocumentation } from "@/app/how-to-use/documentation";
 
 export const metadata: Metadata = {
   title: "How to use IMS — user guide",
